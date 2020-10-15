@@ -15,7 +15,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2020/10/15/php_debug/1.png">
 <meta property="article:published_time" content="2020-10-15T02:42:58.000Z">
-<meta property="article:modified_time" content="2020-10-15T03:47:32.763Z">
+<meta property="article:modified_time" content="2020-10-15T03:49:59.773Z">
 <meta property="article:author" content="a1phaboy">
 <meta property="article:tag" content="磨刀">
 <meta property="article:tag" content="PHP">
@@ -110,7 +110,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">准备工作</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B"><span class="toc-number">3.</span> <span class="toc-text">自己动手</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -158,7 +158,7 @@
   <div class="content" itemprop="articleBody">
     <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在一些PHP的代码审计中，有的时候静态分析就能得到结果，但绝大多数情况下，遇到代码逻辑结构复杂、甚至代码加密的情况下，动态调试php代码就显得尤其重要了，动态调试的优点是：可以设置断点、根据php的代码执行流程跟踪变量的值，以便分析某个变量是否存在可控可利用。本文讲解如何搭建PHP动态调试环境以及演示一个调试的例子。</p>
 <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>vscode<br>phpstudy(Apache,php 7.x)<br>xdebug<br><strong>tips:xdebug只支持php 7.x以上的环境，根据自己的php版本来选择xdebug</strong>  </p>
-<p>在vscode中安装插件 php debug。<br>在项目文件夹内的.vscode文件夹中,修改launch.json，添加以下代码。↓↓  </p>
+<h2 id="自己动手"><a href="#自己动手" class="headerlink" title="自己动手"></a>自己动手</h2><p>在vscode中安装插件 php debug。<br>在项目文件夹内的.vscode文件夹中,修改launch.json，添加以下代码。↓↓  </p>
 <pre name="code" class="json">
     "version": "0.2.0",
         "configurations": [
@@ -197,9 +197,9 @@ xdebug.remote_log="D:\phpStudy_64\phpstudy_pro\Extensions\php\xdebug.log"
 </pre>  
 <p>然后可通过cmd &gt; php -m 或者 phpinfo 查看是否成功安装的xdebug插件。  </p>
 <p>如果成功安装，则在vscode的debug模块左上角run Listen for Xdebug 调试器 如果vscode底部颜色变桔色，则说明已经进入监听。这里我以hellophp.php为例↓↓<br>在代码的第一行设置断点，按F11或者“↓”的单步调试。<br><img src="/2020/10/15/php_debug/1.png"><br>到这一步，php的动态调试环境已经搭建完成。在实际问题中，可以对整个项目的关键代码下断点，然后进行单步调试分析，只不过一段时间之后程序会自动退出，这个问题可以通过修改（默认相对路径：Extensions\Apache2.4.39\conf\vhosts\）vhosts文件夹下对应设置端口的conf文件，添加如下两行代码↓↓</p>
-<pre>  
-     IPCConnectTimeout 3000
-        IPCCommTimeout 3000
+<pre>
+IPCConnectTimeout 3000
+IPCCommTimeout 3000
 </pre>  
 <p>时间可以自己按需求设置。</p>
 
@@ -227,7 +227,7 @@ xdebug.remote_log="D:\phpStudy_64\phpstudy_pro\Extensions\php\xdebug.log"
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">准备工作</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B"><span class="toc-number">3.</span> <span class="toc-text">自己动手</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
