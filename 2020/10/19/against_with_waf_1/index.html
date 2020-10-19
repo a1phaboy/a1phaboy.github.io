@@ -15,7 +15,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2020/10/19/against_with_waf_1/1.jpg">
 <meta property="article:published_time" content="2020-10-19T14:43:55.000Z">
-<meta property="article:modified_time" content="2020-10-19T15:03:57.838Z">
+<meta property="article:modified_time" content="2020-10-19T15:32:25.109Z">
 <meta property="article:author" content="a1phaboy">
 <meta property="article:tag" content="砍柴">
 <meta property="article:tag" content="php">
@@ -81,6 +81,8 @@
     <br/>
     <span id="actions">
       <ul>
+        
+        <li><a class="icon" href="/2020/10/19/waf_errorpage_summary/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" href="/2020/10/17/analysis_1/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -158,7 +160,7 @@
 
   <div class="content" itemprop="articleBody">
     <p>在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！<br>平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。<br>绕过web防火墙笔者认为主要是分为三个阶段：  </p>
-<h2 id="第一阶段"><a href="#第一阶段" class="headerlink" title="第一阶段"></a>第一阶段</h2><p>识别waf。我喜欢叫踩点，主要的作用和意义在于摸清楚网站用的是什么waf。<br>各个防火墙的拦截页面请查看<a href="/2020/10/16/experience_1/index.html">这篇文章</a><br>这里我们遇到的是这个↓↓<br><img src="/2020/10/19/against_with_waf_1/1.jpg"><br>对比后可以发现，和BT 的防火墙最像，由此可以确定是BT的waf，但是版本还是未知。  </p>
+<h2 id="第一阶段"><a href="#第一阶段" class="headerlink" title="第一阶段"></a>第一阶段</h2><p>识别waf。我喜欢叫踩点，主要的作用和意义在于摸清楚网站用的是什么waf。<br>各个防火墙的拦截页面请查看<a href="/2020/10/19/waf_errorpage_summary/index.html">这篇文章</a><br>这里我们遇到的是这个↓↓<br><img src="/2020/10/19/against_with_waf_1/1.jpg"><br>对比后可以发现，和BT 的防火墙最像，由此可以确定是BT的waf，但是版本还是未知。  </p>
 <h2 id="第二阶段"><a href="#第二阶段" class="headerlink" title="第二阶段"></a>第二阶段</h2><p>查阅文献。可以从网上翻阅查找此类waf的绕过方式与技巧，目前很多的博客和论坛都谈到如何绕过waf的技巧，这里笔者就不详细展开了。  </p>
 <h2 id="第三阶段"><a href="#第三阶段" class="headerlink" title="第三阶段"></a>第三阶段</h2><p>手工绕过。这是在自己翻阅了资料尝试无果（或者是绕墙大佬直接采用的方法），简单粗暴，就是去判断过滤了那些字符，是否做了正则匹配，制造出独特的payload来绕过。一般手工绕过的深度取决于自身的技术水平和经验（还是得以经验为主呀，有的墙绕着绕着就懂了）。  </p>
 <h2 id="回归正题"><a href="#回归正题" class="headerlink" title="回归正题"></a>回归正题</h2><p>从第一步我们已经得知了是付费版的BT，从网上查阅无果后，开始手工绕过进行尝试。初试后发现该墙会拦&lt;?php(把&lt;?和php分开不会拦截)，file_get_contents等一些函数也会拦，反而file_put_contents没有拦截，说明可以写文件上去。<br>尝试过&lt;\script language=”php”&gt;的办法，是不会拦的，但是这种写法在php配置中默认关闭了的，需要配置php.ini文件中的asp_tags。目标的php环境没有开启，那么只能用段标签了。<br>那么现在的思路就是： 短标签构造一句话 ===&gt; file_put_contents 上传 ===&gt; getshell<br>但是万事总是不尽人意。上传一句话成功了，但是还是被拦了，看来是做了post流量检测（付费版果然不一样啊~~）。<br>既然如此，那我就上传一个加密的马呗，那现在的思路变成：短标签构造加密shell  ===&gt; file_put_contents ===&gt;getshell<br>结果还是如此地戏剧化，还是失败！经过测试发现waf把base64_decode也给拦了，要不要人活了。。<br>所谓道高一尺，魔高一丈你拦我base64_decode，但是你不拦我base64_ . decode 呀，采用字符串拼接可以有效绕过。<br>那么现在的思路是：短标签+拼接构造payload，让其本地写base64_decode ===&gt;执行，触发file_put_contents，将base64_decode出的马写入文件 ===&gt;getshell。<br>有了这个思路，我们再去构造payload，这里我放出我的payload(大家可以集思广益:))：  </p>
