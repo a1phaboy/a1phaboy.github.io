@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。绕过web防火墙笔者认为主要是分为三个阶段：   第一阶段识别waf。我喜欢叫踩点，主要的作用和意义在于摸清楚网站用的是什么waf。各个防火墙的拦截页面请查看这篇文章。这里我们遇到的是这个↓↓对比后可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次绕墙测试">
+<meta property="og:url" content="http://example.com/2020/10/19/against_with_waf_1/index.html">
+<meta property="og:site_name" content="a1phaboy">
+<meta property="og:description" content="在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。绕过web防火墙笔者认为主要是分为三个阶段：   第一阶段识别waf。我喜欢叫踩点，主要的作用和意义在于摸清楚网站用的是什么waf。各个防火墙的拦截页面请查看这篇文章。这里我们遇到的是这个↓↓对比后可以">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2020/10/19/against_with_waf_1/1.jpg">
+<meta property="article:published_time" content="2020-10-19T14:43:55.000Z">
+<meta property="article:modified_time" content="2020-10-19T14:53:23.098Z">
+<meta property="article:author" content="a1phaboy">
+<meta property="article:tag" content="砍柴">
+<meta property="article:tag" content="php">
+<meta property="article:tag" content="waf">
+<meta property="article:tag" content="绕过">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/10/19/against_with_waf_1/1.jpg">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>记一次绕墙测试</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/a1phaboy">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2020/10/17/analysis_1/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/10/19/against_with_waf_1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/10/19/against_with_waf_1/&text=记一次绕墙测试"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/10/19/against_with_waf_1/&is_video=false&description=记一次绕墙测试"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记一次绕墙测试&body=Check out this article: http://example.com/2020/10/19/against_with_waf_1/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/19/against_with_waf_1/&name=记一次绕墙测试&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/19/against_with_waf_1/&t=记一次绕墙测试"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5"><span class="toc-number">1.</span> <span class="toc-text">第一阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5"><span class="toc-number">2.</span> <span class="toc-text">第二阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5"><span class="toc-number">3.</span> <span class="toc-text">第三阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9E%E5%BD%92%E6%AD%A3%E9%A2%98"><span class="toc-number">4.</span> <span class="toc-text">回归正题</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        记一次绕墙测试
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">a1phaboy</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-10-19T14:43:55.000Z" itemprop="datePublished">2020-10-19</time>
+        
+      
+    </div>
+
+
+      
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/php/" rel="tag">php</a>, <a class="tag-link-link" href="/tags/waf/" rel="tag">waf</a>, <a class="tag-link-link" href="/tags/%E7%A0%8D%E6%9F%B4/" rel="tag">砍柴</a>, <a class="tag-link-link" href="/tags/%E7%BB%95%E8%BF%87/" rel="tag">绕过</a>
+    </div>
+
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！<br>平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。<br>绕过web防火墙笔者认为主要是分为三个阶段：  </p>
+<h2 id="第一阶段"><a href="#第一阶段" class="headerlink" title="第一阶段"></a>第一阶段</h2><p>识别waf。我喜欢叫踩点，主要的作用和意义在于摸清楚网站用的是什么waf。<br>各个防火墙的拦截页面请查看<a href="File://experience_1.md">这篇文章</a>。<br>这里我们遇到的是这个↓↓<br><img src="/2020/10/19/against_with_waf_1/1.jpg"><br>对比后可以发现，和BT 的防火墙最像，由此可以确定是BT的waf，但是版本还是未知。  </p>
+<h2 id="第二阶段"><a href="#第二阶段" class="headerlink" title="第二阶段"></a>第二阶段</h2><p>查阅文献。可以从网上翻阅查找此类waf的绕过方式与技巧，目前很多的博客和论坛都谈到如何绕过waf的技巧，这里笔者就不详细展开了。  </p>
+<h2 id="第三阶段"><a href="#第三阶段" class="headerlink" title="第三阶段"></a>第三阶段</h2><p>手工绕过。这是在自己翻阅了资料尝试无果（或者是绕墙大佬直接采用的方法），简单粗暴，就是去判断过滤了那些字符，是否做了正则匹配，制造出独特的payload来绕过。一般手工绕过的深度取决于自身的技术水平和经验（还是得以经验为主呀，有的墙绕着绕着就懂了）。  </p>
+<h2 id="回归正题"><a href="#回归正题" class="headerlink" title="回归正题"></a>回归正题</h2><p>从第一步我们已经得知了是付费版的BT，从网上查阅无果后，开始手工绕过进行尝试。初试后发现该墙会拦&lt;?php(把&lt;?和php分开不会拦截)，file_get_contents等一些函数也会拦，反而file_put_contents没有拦截，说明可以写文件上去。<br>尝试过&lt;\script language=”php”&gt;的办法，是不会拦的，但是这种写法在php配置中默认关闭了的，需要配置php.ini文件中的asp_tags。目标的php环境没有开启，那么只能用段标签了。<br>那么现在的思路就是： 短标签构造一句话 ===&gt; file_put_contents 上传 ===&gt; getshell<br>但是万事总是不尽人意。上传一句话成功了，但是还是被拦了，看来是做了post流量检测（付费版果然不一样啊~~）。<br>既然如此，那我就上传一个加密的马呗，那现在的思路变成：短标签构造加密shell  ===&gt; file_put_contents ===&gt;getshell<br>结果还是如此地戏剧化，还是失败！经过测试发现waf把base64_decode也给拦了，要不要人活了。。<br>所谓道高一尺，魔高一丈你拦我base64_decode，但是你不拦我base64_ . decode 呀，采用字符串拼接可以有效绕过。<br>那么现在的思路是：短标签+拼接构造payload，让其本地写base64_decode ===&gt;执行，触发file_put_contents，将base64_decode出的马写入文件 ===&gt;getshell。<br>有了这个思路，我们再去构造payload，这里我放出我的payload(大家可以集思广益:))：  </p>
+<pre>
+&lt;? 
+$txt0="&lt;? file_put_contents";
+$txt1="('123.php',";
+$txt2="base64";
+$txt3="_decode";
+$txt4="('base64加密过的流量加密马')); ?>";
+$myfile = fopen("te.php", "w");
+fwrite($myfile,$txt0.$txt1.$txt2.$txt3.$txt4);
+?>
+</pre>
+<p>需要注意的一点的是，这种写法得先执行这个payload的文件触发fopen()函数，再访问te.php文件触发file_put_contents。因此，123.php才是最后的webshell。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/a1phaboy">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5"><span class="toc-number">1.</span> <span class="toc-text">第一阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5"><span class="toc-number">2.</span> <span class="toc-text">第二阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5"><span class="toc-number">3.</span> <span class="toc-text">第三阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9E%E5%BD%92%E6%AD%A3%E9%A2%98"><span class="toc-number">4.</span> <span class="toc-text">回归正题</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/10/19/against_with_waf_1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/10/19/against_with_waf_1/&text=记一次绕墙测试"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/10/19/against_with_waf_1/&is_video=false&description=记一次绕墙测试"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记一次绕墙测试&body=Check out this article: http://example.com/2020/10/19/against_with_waf_1/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/19/against_with_waf_1/&name=记一次绕墙测试&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/19/against_with_waf_1/&t=记一次绕墙测试"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2020
+    a1phaboy
+    <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/a1phaboy">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- scripts.ejs  http://busuanzi.ibruce.info/  -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
