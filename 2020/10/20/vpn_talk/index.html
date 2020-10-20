@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="昨天同事在进行取证工作的时候，发现一个ip疑似是自己人的ip，经过询问发现，还真是自己人的！（手动狗头）最骚的是和那个哥们聊天，那哥们回答说：”我开了VPN了呀。”并给我们截了一张ipconfig的图，内网地址为10.x.x.x。当时给我的感觉就像是这样：   玩笑归玩笑，道理还是要讲的，在和这位哥们普及了一波VPN知识以后，突然发现自己对VPN又有了新的认知，借此契机，赶紧存档下来。   前方干">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漫谈VPN与代理服务那些事儿">
+<meta property="og:url" content="http://example.com/2020/10/20/vpn_talk/index.html">
+<meta property="og:site_name" content="a1phaboy">
+<meta property="og:description" content="昨天同事在进行取证工作的时候，发现一个ip疑似是自己人的ip，经过询问发现，还真是自己人的！（手动狗头）最骚的是和那个哥们聊天，那哥们回答说：”我开了VPN了呀。”并给我们截了一张ipconfig的图，内网地址为10.x.x.x。当时给我的感觉就像是这样：   玩笑归玩笑，道理还是要讲的，在和这位哥们普及了一波VPN知识以后，突然发现自己对VPN又有了新的认知，借此契机，赶紧存档下来。   前方干">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2020/10/20/vpn_talk/xiafan.gif">
+<meta property="og:image" content="http://example.com/2020/10/20/vpn_talk/proxy.png">
+<meta property="og:image" content="http://example.com/2020/10/20/vpn_talk/reproxy.png">
+<meta property="article:published_time" content="2020-10-20T04:42:43.000Z">
+<meta property="article:modified_time" content="2020-10-20T13:01:10.600Z">
+<meta property="article:author" content="a1phaboy">
+<meta property="article:tag" content="磨刀">
+<meta property="article:tag" content="科普">
+<meta property="article:tag" content="TCP&#x2F;IP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/10/20/vpn_talk/xiafan.gif">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>漫谈VPN与代理服务那些事儿</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/a1phaboy">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2020/10/19/waf_errorpage_summary/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/10/20/vpn_talk/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/10/20/vpn_talk/&text=漫谈VPN与代理服务那些事儿"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/10/20/vpn_talk/&is_video=false&description=漫谈VPN与代理服务那些事儿"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=漫谈VPN与代理服务那些事儿&body=Check out this article: http://example.com/2020/10/20/vpn_talk/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/20/vpn_talk/&name=漫谈VPN与代理服务那些事儿&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/20/vpn_talk/&t=漫谈VPN与代理服务那些事儿"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#VPN"><span class="toc-number">1.</span> <span class="toc-text">VPN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VPN%E7%94%A8%E5%88%B0%E7%9A%84%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.1.</span> <span class="toc-text">VPN用到的协议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">代理服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.1.</span> <span class="toc-text">代理协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-number">2.2.</span> <span class="toc-text">正向代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-number">2.3.</span> <span class="toc-text">反向代理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VPN%E4%B8%8E%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">3.</span> <span class="toc-text">VPN与代理服务的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%93%E5%B1%95%E7%9F%A5%E8%AF%86-CDN"><span class="toc-number">4.</span> <span class="toc-text">拓展知识:CDN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        漫谈VPN与代理服务那些事儿
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">a1phaboy</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-10-20T04:42:43.000Z" itemprop="datePublished">2020-10-20</time>
+        
+      
+    </div>
+
+
+      
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/TCP-IP/" rel="tag">TCP/IP</a>, <a class="tag-link-link" href="/tags/%E7%A3%A8%E5%88%80/" rel="tag">磨刀</a>, <a class="tag-link-link" href="/tags/%E7%A7%91%E6%99%AE/" rel="tag">科普</a>
+    </div>
+
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>昨天同事在进行取证工作的时候，发现一个ip疑似是自己人的ip，经过询问发现，还真是自己人的！（手动狗头）最骚的是和那个哥们聊天，那哥们回答说：”我开了VPN了呀。”并给我们截了一张ipconfig的图，内网地址为10.x.x.x。当时给我的感觉就像是这样：<br><img src="/2020/10/20/vpn_talk/xiafan.gif">  </p>
+<p>玩笑归玩笑，道理还是要讲的，在和这位哥们普及了一波VPN知识以后，突然发现自己对VPN又有了新的认知，借此契机，赶紧存档下来。  </p>
+<p><em>前方干货高能预警，请自备茶水瓜子和纸笔 :)</em></p>
+<h2 id="VPN"><a href="#VPN" class="headerlink" title="VPN"></a>VPN</h2><p>VPN（英语：Virtual Private Network，缩写：VPN），意思上意思是虚拟专用网络，是一种常用于连接中、大型企业或团体与团体间的私人网络的通讯方法。举个例子来说，如果想要在家办公，而公司只允许局域网访问OA等系统，那只可连接公司的VPN服务器来访问公司内部的系统。<br>简单的一句话概括就是说：<strong>VPN是一种虚拟出来的企业内部专线，通过在公用网络上建立专线网络，来进行加密通讯，VPN大多是解决外部网络访问内部网络问题</strong>  </p>
+<h3 id="VPN用到的协议"><a href="#VPN用到的协议" class="headerlink" title="VPN用到的协议"></a>VPN用到的协议</h3><p>PPTP，L2TP，IPsec，SSL VPN</p>
+<h2 id="代理服务"><a href="#代理服务" class="headerlink" title="代理服务"></a>代理服务</h2><p>刚说完VPN，怎么又冒出来一个代理服务呢？不急，听我慢慢道来。<br>代理服务，又称网络代理服务（Proxy Server），是一种特殊的网络服务，允许一个网络终端（一般为客户端）通过这个代理服务与另一个网络终端（一般为服务器）进行非直接的连接。并且在代理服务器上还设置有缓存，如果客户端所要获取的资源在代理服务器的缓存之中，则代理服务器并不会向目标服务器发送请求，而是直接传回已缓存的资源。</p>
+<h3 id="代理协议"><a href="#代理协议" class="headerlink" title="代理协议"></a>代理协议</h3><p><em>HTTP</em><br>HTTP代理是在HTTP协议层的代理服务，也就是应用层的代理服务，简单的说，只对HTTP协议进行代理，主要满足用户Web浏览网页需求，只处理HTTP请求，而处理不了其他的应用层协议的代理（比如qq，微信等通信应用）。  </p>
+<p><em>Socks</em><br>根据OSI模型，SOCKS是会话层的协议，位于表示层与传输层之间。（由于现在绝大多数情况都是TCP/IP，可以理解为处于传输层且TCP/UDP前），相比较于HTTP代理，SOCKS并不在意上层应用层使用的是什么协议，因此，可以对ftp，http等不同应用层协议进行代理，也支持QQ、BT下载等多种应用。<br>Socks分为socks 4 和socks 5，socks 4只支持TCP协议而socks 5支持TCP/UDP协议，还支持各种身份验证机制等协议。  </p>
+<p><strong>由此可以看出，Socks的代理能力比HTTP的代理能力更加强大，而HTTP则是单一的、快速的对HTTP做代理。因此笔者认为HTTP更像是Socks的一种特定延申。另外一点区别也很重要，通常Socks代理是需要客户端的，例如（shadowsocks，clashwindows，v2rayN等），而HTTP代理通常只需要浏览器设置proxy代理即可。</strong>  </p>
+<h3 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h3><p>正向代理顾名思义是以流程来说，用户通过代理服务器进行代理访问目标网站，这样一套流程就叫正向代理。在这个流程中，用户是知道目标网站的域名和ip的，而目标网站是不知道用户的ip地址，只知道代理服务器的ip地址，这里可以参考下图↓↓<br><img src="/2020/10/20/vpn_talk/proxy.png"></p>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p>如果将正向代理的逻辑反过来说，用户访问了目标站点的代理服务器时，由代理服务器来决定用户访问哪一台服务器，通常来说使用了反向代理服务的目标站点一般是部署在多台服务器上的。而在这种流程中，用户只知道目标站点的域名，而无法确定目标站点的ip地址，这种形式的代理通常被用作实现负载均衡，比如Nginx就是一种出色的反向代理服务器。这里可以参考下图↓↓<br><img src="/2020/10/20/vpn_talk/reproxy.png"></p>
+<p><strong>总结来说，正向代理可以理解为用户提供的代理服务，而反向代理则可以理解为网络服务方提供的代理服务。</strong></p>
+<h2 id="VPN与代理服务的关系"><a href="#VPN与代理服务的关系" class="headerlink" title="VPN与代理服务的关系"></a>VPN与代理服务的关系</h2><p>洋洋洒洒讲了这么多，其实VPN与代理服务属于包含关系，代理服务包含了VPN或者说<strong>VPN是代理服务的一个子集</strong>。从本质上来说，VPN也是一个代理服务，与Socks代理还是HTTP代理一样，它都是需要第三方的介入来完成双方的通信（也可以把代理服务理解为”中间商”），但是不同之处还是有如下几点：<br>1.VPN是连接企业内部专线的代理服务，而Socks或者是HTTP则是为了提高访问速度、隐藏真实IP或是突破自身IP访问限制访问国外站点。<strong>由此可见，以用户的角度出发，VPN是由外网向内网做的代理，而Socks/HTTP则是由内向外做代理。</strong><br>2.<strong>VPN设置全局代理，而Socks/HTTP则是部分代理。</strong>用过easyconnect的同学都知道，当连上VPN服务器以后，VPN服务器会自动给我们配一个内网地址，以便于自身好像就处于局域网之中，此时所有的网络流量都会经过VPN服务器（这也是为什么有的同学在学校打游戏，忘记关学校VPN结果很卡的原因了），而Socks/HTTP则不配置ip地址，只是将它们处理的数据包导向代理服务器，再由代理服务器转发。<br>3.<strong>VPN相对Socks/HTTP来说比较安全。</strong>近年来特别是采用了SSL VPN的技术，识得想要截获破密的难度加大，并且VPN采用的还是隧道协议，相比较Socks/HTTP来说搭建起来复杂，但是安全。而Socks/HTTP代理则是原封不动得将数据包传给代理服务器，一旦被截获会产生很大的安全隐患。尽管说现在的代理会先在本地开个服务，将数据包加密以后再发送给代理服务器，但是通过特征还是可以识别，另一方面如果代理服务器是某个不法组织或是别有用心的人创建的，则会用于记录用户传输的数据，那信息将会无条件暴露在他们面前。</p>
+<h2 id="拓展知识-CDN"><a href="#拓展知识-CDN" class="headerlink" title="拓展知识:CDN"></a>拓展知识:CDN</h2><p>在日常渗透工作中，也遇到过不乏存在cdn的站点。遇到这类的站点也属实头疼，找出真实的ip网上有很多的方法，笔者也不再赘述，但大多方法也不是很有效。  </p>
+<p>内容分发网络（英语：Content Delivery Network或Content Distribution Network，缩写：CDN）是指一种透过互联网互相连接的电脑网络系统，利用最靠近每位用户的服务器，更快、更可靠地将音乐、图片、影片、应用程序及其他文件发送给用户，来提供高性能、可扩展性及低成本的网络内容传递给用户。<br>由文献可知cdn的作用是提高用户的上网体验，cdn更像是一种解决方案，以及<strong>反向代理</strong>的延申并且可以隐藏真实ip，提高安全性。cdn服务器的运作方式一般是基于nginx的模式，也就是仅仅缓存网站的静态内容，因此比较有效的办法是：可以从页面的动态交互处进行突破。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8">https://zh.wikipedia.org/wiki/%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8</a><br><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/SOCKS">https://zh.wikipedia.org/wiki/SOCKS</a><br><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%85%A7%E5%AE%B9%E5%82%B3%E9%81%9E%E7%B6%B2%E8%B7%AF">https://zh.wikipedia.org/wiki/%E5%85%A7%E5%AE%B9%E5%82%B3%E9%81%9E%E7%B6%B2%E8%B7%AF</a><br><a target="_blank" rel="noopener" href="http://blackwolfsec.cc/2016/09/10/vpn_proxy/">http://blackwolfsec.cc/2016/09/10/vpn_proxy/</a><br><a target="_blank" rel="noopener" href="http://www.linuxmysql.com/17/2018/780.htm">http://www.linuxmysql.com/17/2018/780.htm</a>  </p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/a1phaboy">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#VPN"><span class="toc-number">1.</span> <span class="toc-text">VPN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VPN%E7%94%A8%E5%88%B0%E7%9A%84%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.1.</span> <span class="toc-text">VPN用到的协议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">代理服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.1.</span> <span class="toc-text">代理协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-number">2.2.</span> <span class="toc-text">正向代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-number">2.3.</span> <span class="toc-text">反向代理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VPN%E4%B8%8E%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">3.</span> <span class="toc-text">VPN与代理服务的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%93%E5%B1%95%E7%9F%A5%E8%AF%86-CDN"><span class="toc-number">4.</span> <span class="toc-text">拓展知识:CDN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/10/20/vpn_talk/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/10/20/vpn_talk/&text=漫谈VPN与代理服务那些事儿"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/10/20/vpn_talk/&is_video=false&description=漫谈VPN与代理服务那些事儿"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=漫谈VPN与代理服务那些事儿&body=Check out this article: http://example.com/2020/10/20/vpn_talk/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/20/vpn_talk/&title=漫谈VPN与代理服务那些事儿"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/20/vpn_talk/&name=漫谈VPN与代理服务那些事儿&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/20/vpn_talk/&t=漫谈VPN与代理服务那些事儿"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2020
+    a1phaboy
+    <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/a1phaboy">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- scripts.ejs  http://busuanzi.ibruce.info/  -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
