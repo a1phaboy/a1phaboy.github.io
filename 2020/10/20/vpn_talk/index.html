@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://example.com/2020/10/20/vpn_talk/proxy.png">
 <meta property="og:image" content="http://example.com/2020/10/20/vpn_talk/reproxy.png">
 <meta property="article:published_time" content="2020-10-20T04:42:43.000Z">
-<meta property="article:modified_time" content="2020-10-20T13:01:10.600Z">
+<meta property="article:modified_time" content="2020-10-21T15:35:20.992Z">
 <meta property="article:author" content="a1phaboy">
 <meta property="article:tag" content="磨刀">
 <meta property="article:tag" content="科普">
@@ -168,7 +168,7 @@
 <h2 id="代理服务"><a href="#代理服务" class="headerlink" title="代理服务"></a>代理服务</h2><p>刚说完VPN，怎么又冒出来一个代理服务呢？不急，听我慢慢道来。<br>代理服务，又称网络代理服务（Proxy Server），是一种特殊的网络服务，允许一个网络终端（一般为客户端）通过这个代理服务与另一个网络终端（一般为服务器）进行非直接的连接。并且在代理服务器上还设置有缓存，如果客户端所要获取的资源在代理服务器的缓存之中，则代理服务器并不会向目标服务器发送请求，而是直接传回已缓存的资源。</p>
 <h3 id="代理协议"><a href="#代理协议" class="headerlink" title="代理协议"></a>代理协议</h3><p><em>HTTP</em><br>HTTP代理是在HTTP协议层的代理服务，也就是应用层的代理服务，简单的说，只对HTTP协议进行代理，主要满足用户Web浏览网页需求，只处理HTTP请求，而处理不了其他的应用层协议的代理（比如qq，微信等通信应用）。  </p>
 <p><em>Socks</em><br>根据OSI模型，SOCKS是会话层的协议，位于表示层与传输层之间。（由于现在绝大多数情况都是TCP/IP，可以理解为处于传输层且TCP/UDP前），相比较于HTTP代理，SOCKS并不在意上层应用层使用的是什么协议，因此，可以对ftp，http等不同应用层协议进行代理，也支持QQ、BT下载等多种应用。<br>Socks分为socks 4 和socks 5，socks 4只支持TCP协议而socks 5支持TCP/UDP协议，还支持各种身份验证机制等协议。  </p>
-<p><strong>由此可以看出，Socks的代理能力比HTTP的代理能力更加强大，而HTTP则是单一的、快速的对HTTP做代理。因此笔者认为HTTP更像是Socks的一种特定延申。另外一点区别也很重要，通常Socks代理是需要客户端的，例如（shadowsocks，clashwindows，v2rayN等），而HTTP代理通常只需要浏览器设置proxy代理即可。</strong>  </p>
+<p><strong>由此可以看出，Socks的代理能力比HTTP的代理能力更加强大，而HTTP则是单一的、快速的对HTTP做代理。因此笔者认为HTTP更像是Socks的一种特定延伸。另外一点区别也很重要，通常Socks代理是需要客户端的，例如（shadowsocks，clashforwindows，v2rayN等），而HTTP代理通常只需要浏览器设置proxy代理即可。</strong>  </p>
 <h3 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h3><p>正向代理顾名思义是以流程来说，用户通过代理服务器进行代理访问目标网站，这样一套流程就叫正向代理。在这个流程中，用户是知道目标网站的域名和ip的，而目标网站是不知道用户的ip地址，只知道代理服务器的ip地址，这里可以参考下图↓↓<br><img src="/2020/10/20/vpn_talk/proxy.png"></p>
 <h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p>如果将正向代理的逻辑反过来说，用户访问了目标站点的代理服务器时，由代理服务器来决定用户访问哪一台服务器，通常来说使用了反向代理服务的目标站点一般是部署在多台服务器上的。而在这种流程中，用户只知道目标站点的域名，而无法确定目标站点的ip地址，这种形式的代理通常被用作实现负载均衡，比如Nginx就是一种出色的反向代理服务器。这里可以参考下图↓↓<br><img src="/2020/10/20/vpn_talk/reproxy.png"></p>
 <p><strong>总结来说，正向代理可以理解为用户提供的代理服务，而反向代理则可以理解为网络服务方提供的代理服务。</strong></p>
