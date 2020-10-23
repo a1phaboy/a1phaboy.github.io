@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="盼望已久的《python安全攻防》终于是出版了，拖了一月又一月，物流很快，第二天就到了，赶紧拿起手刷起来。相比较《web安全攻防》，这本书给我的感觉更为紧凑，目标也有所不同，几乎全是敲代码，自动化工具的开发，简直是“程序员”的福音啊~~，抱着学习的态度，赶紧第三章练起手来。第三章主要是讲pocsuite的poc编写，由于笔者之前写过xray的poc编写。相比之下我觉得各有各的好处吧：xray的po">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pocsuite之如何编写poc">
+<meta property="og:url" content="http://example.com/2020/10/23/pocsuite_poc_make/index.html">
+<meta property="og:site_name" content="a1phaboy">
+<meta property="og:description" content="盼望已久的《python安全攻防》终于是出版了，拖了一月又一月，物流很快，第二天就到了，赶紧拿起手刷起来。相比较《web安全攻防》，这本书给我的感觉更为紧凑，目标也有所不同，几乎全是敲代码，自动化工具的开发，简直是“程序员”的福音啊~~，抱着学习的态度，赶紧第三章练起手来。第三章主要是讲pocsuite的poc编写，由于笔者之前写过xray的poc编写。相比之下我觉得各有各的好处吧：xray的po">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-23T14:23:06.000Z">
+<meta property="article:modified_time" content="2020-10-23T14:23:09.529Z">
+<meta property="article:author" content="a1phaboy">
+<meta property="article:tag" content="磨刀">
+<meta property="article:tag" content="编程">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="poc">
+<meta property="article:tag" content="书籍解读">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>pocsuite之如何编写poc</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/a1phaboy">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2020/10/21/cpp_builder_1/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/10/23/pocsuite_poc_make/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/10/23/pocsuite_poc_make/&text=pocsuite之如何编写poc"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/10/23/pocsuite_poc_make/&is_video=false&description=pocsuite之如何编写poc"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=pocsuite之如何编写poc&body=Check out this article: http://example.com/2020/10/23/pocsuite_poc_make/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/23/pocsuite_poc_make/&name=pocsuite之如何编写poc&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/23/pocsuite_poc_make/&t=pocsuite之如何编写poc"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%BF%90%E8%A1%8CPOC%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">如何运行POC？##</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E5%AD%97%E6%AE%B5"><span class="toc-number">1.1.</span> <span class="toc-text">信息字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">验证模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">利用模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AA%E6%9D%A5%E6%89%93%E7%AE%97"><span class="toc-number">2.</span> <span class="toc-text">未来打算</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        pocsuite之如何编写poc
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">a1phaboy</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-10-23T14:23:06.000Z" itemprop="datePublished">2020-10-23</time>
+        
+      
+    </div>
+
+
+      
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/poc/" rel="tag">poc</a>, <a class="tag-link-link" href="/tags/python/" rel="tag">python</a>, <a class="tag-link-link" href="/tags/%E4%B9%A6%E7%B1%8D%E8%A7%A3%E8%AF%BB/" rel="tag">书籍解读</a>, <a class="tag-link-link" href="/tags/%E7%A3%A8%E5%88%80/" rel="tag">磨刀</a>, <a class="tag-link-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a>
+    </div>
+
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>盼望已久的《python安全攻防》终于是出版了，拖了一月又一月，物流很快，第二天就到了，赶紧拿起手刷起来。<br>相比较《web安全攻防》，这本书给我的感觉更为紧凑，目标也有所不同，几乎全是敲代码，自动化工具的开发，简直是“程序员”的福音啊~~，抱着学习的态度，赶紧第三章练起手来。<br>第三章主要是讲pocsuite的poc编写，由于笔者之前写过xray的poc编写。相比之下我觉得各有各的好处吧：xray的poc给我的感觉是简洁明了，缺点是xray貌似只支持poc而不支持exp；而pocsuite则是给我一种“系统”的感觉，它既有poc，也有exp，并且还集成了zoomeye，seebug等API，生态非常的好。<br>那我们闲话不多说，进入正题：开始我们的poc编写！<br>POC的部分是由_verify函数实现，exp是由_attack函数实现。  </p>
+<h2 id="如何运行POC？"><a href="#如何运行POC？" class="headerlink" title="如何运行POC？##"></a>如何运行POC？##</h2><p>python pocsuite.py -r pocs/test1.py(poc脚本路径) -u <a target="_blank" rel="noopener" href="https://www.example.com/">https://www.example.com</a> –verify<br>-r 为脚本路径，-u为目标地址  </p>
+<p>批量验证：<br>python pocsuite.py -r pocs/test1.py -f url.txt –verify<br>-f 后面跟写要进行扫描的所有ip的txt文件  </p>
+<p>加载文件夹下的所有poc对目标进行测试：<br>python pocsuite.py -r pocs/* -u <a target="_blank" rel="noopener" href="https://www.example.com/">https://www.example.com</a> –verify<br>用*代替poc文件  </p>
+<p>使用多线程。 –threads 表示线程数<br>Attack模式。 –attack<br>shell交互。 –shell<br>自定义command进行半交互。 –command “whoami”  </p>
+<p>##如何编写POC？##<br>首先要先继承POCBase类，成为其子类。</p>
+<pre>
+from pocsuite3.api import Output,POCBase,register_poc,requests,logger
+from pocsuite3.api import get_listener_ip,get_listener_port
+from pocsuite3.api import REVERSE_PAYLOAD
+from pocsuite3.lib.utils import random_str
+    class yourpoc(POCBase):
+        ......
+</pre>
+<p>poc主要分为3个部分：基本信息字段，验证模式，利用模式。</p>
+<h3 id="信息字段"><a href="#信息字段" class="headerlink" title="信息字段"></a>信息字段</h3><pre>
+vulID = '1234'
+version = '1'
+author = 'alphaboy'
+vulDate = '2020-10-23'
+createDate = '2020-10-23'
+updateDate = '2020-10-23'
+references = ['漏洞来源地址,0day不用写']
+name = 'poc's name'
+appPowerLink = '漏洞厂商的主页地址'
+appName = '漏洞应用名称'
+appVersion = '漏洞影响版本'
+vulType = '漏洞类型'
+desc = ''' 漏洞简要描述 '''
+samples = [使用poc成功的网站]
+install_requires = []
+</pre>
+
+<h3 id="验证模式"><a href="#验证模式" class="headerlink" title="验证模式"></a>验证模式</h3><pre>
+def _verify(self):
+    output = Output(self)
+    # 定义一些参数
+    try:
+        # 验证代码
+        if result: #result表示返回结果
+            # 为result对象赋值
+            # result['VerifyInfo'];result['VerifyInfo']['URL'];result['VerifyInfo']['Name'] etc..
+            return self.parse_output(result)
+
+</pre>
+
+<h3 id="利用模式"><a href="#利用模式" class="headerlink" title="利用模式"></a>利用模式</h3><p>如果没有利用模式，可在_Attack()函数中加入return seif.verify()。<br>利用模式的编写和POC的编写一样，只是_verify变成了_attack函数，验证代码部分替换成了payload，因各个漏洞类型层出不穷，payload也是五花八门，笔者能力有限，就不举栗子了 :)</p>
+<h2 id="未来打算"><a href="#未来打算" class="headerlink" title="未来打算"></a>未来打算</h2><p>初次接触pocsuite下来，笔者觉得这款工具非常的不错，相比较一般的扫描器，更具灵活性和可维护性，日后笔者会不定期地更新poc到库中，希望大神们能够多多给我一些建议和指正！:)</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/a1phaboy">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%BF%90%E8%A1%8CPOC%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">如何运行POC？##</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E5%AD%97%E6%AE%B5"><span class="toc-number">1.1.</span> <span class="toc-text">信息字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">验证模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">利用模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AA%E6%9D%A5%E6%89%93%E7%AE%97"><span class="toc-number">2.</span> <span class="toc-text">未来打算</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/10/23/pocsuite_poc_make/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/10/23/pocsuite_poc_make/&text=pocsuite之如何编写poc"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/10/23/pocsuite_poc_make/&is_video=false&description=pocsuite之如何编写poc"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=pocsuite之如何编写poc&body=Check out this article: http://example.com/2020/10/23/pocsuite_poc_make/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/23/pocsuite_poc_make/&title=pocsuite之如何编写poc"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/23/pocsuite_poc_make/&name=pocsuite之如何编写poc&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/23/pocsuite_poc_make/&t=pocsuite之如何编写poc"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2020
+    a1phaboy
+    <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/a1phaboy">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- scripts.ejs  http://busuanzi.ibruce.info/  -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
