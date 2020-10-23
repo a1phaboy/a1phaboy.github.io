@@ -9,19 +9,19 @@
     <meta name="description" content="前言在一些PHP的代码审计中，有的时候静态分析就能得到结果，但绝大多数情况下，遇到代码逻辑结构复杂、甚至代码加密的情况下，动态调试php代码就显得尤其重要了，动态调试的优点是：可以设置断点、根据php的代码执行流程跟踪变量的值，以便分析某个变量是否存在可控可利用。本文讲解如何搭建PHP动态调试环境以及演示一个调试的例子。 准备工作vscodephpstudy(Apache,php 7.x)xdeb">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP动态环境配置与调试">
-<meta property="og:url" content="http://example.com/2020/10/15/php_debug/index.html">
+<meta property="og:url" content="https://a1phaboy.github.io/2020/10/15/php_debug/index.html">
 <meta property="og:site_name" content="a1phaboy">
 <meta property="og:description" content="前言在一些PHP的代码审计中，有的时候静态分析就能得到结果，但绝大多数情况下，遇到代码逻辑结构复杂、甚至代码加密的情况下，动态调试php代码就显得尤其重要了，动态调试的优点是：可以设置断点、根据php的代码执行流程跟踪变量的值，以便分析某个变量是否存在可控可利用。本文讲解如何搭建PHP动态调试环境以及演示一个调试的例子。 准备工作vscodephpstudy(Apache,php 7.x)xdeb">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/10/15/php_debug/1.png">
+<meta property="og:image" content="https://a1phaboy.github.io/2020/10/15/php_debug/1.png">
 <meta property="article:published_time" content="2020-10-15T02:42:58.000Z">
-<meta property="article:modified_time" content="2020-10-15T03:49:59.773Z">
+<meta property="article:modified_time" content="2020-10-23T14:39:30.539Z">
 <meta property="article:author" content="a1phaboy">
 <meta property="article:tag" content="代码审计">
 <meta property="article:tag" content="磨刀">
 <meta property="article:tag" content="PHP">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/10/15/php_debug/1.png">
+<meta name="twitter:image" content="https://a1phaboy.github.io/2020/10/15/php_debug/1.png">
     
     
         
@@ -97,17 +97,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/10/15/php_debug/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/10/15/php_debug/&text=PHP动态环境配置与调试"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/10/15/php_debug/&is_video=false&description=PHP动态环境配置与调试"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=PHP动态环境配置与调试&body=Check out this article: http://example.com/2020/10/15/php_debug/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/15/php_debug/&name=PHP动态环境配置与调试&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/15/php_debug/&t=PHP动态环境配置与调试"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://a1phaboy.github.io/2020/10/15/php_debug/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://a1phaboy.github.io/2020/10/15/php_debug/&text=PHP动态环境配置与调试"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://a1phaboy.github.io/2020/10/15/php_debug/&is_video=false&description=PHP动态环境配置与调试"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=PHP动态环境配置与调试&body=Check out this article: https://a1phaboy.github.io/2020/10/15/php_debug/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://a1phaboy.github.io/2020/10/15/php_debug/&name=PHP动态环境配置与调试&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://a1phaboy.github.io/2020/10/15/php_debug/&t=PHP动态环境配置与调试"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -234,17 +234,17 @@ IPCCommTimeout 3000
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/10/15/php_debug/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/10/15/php_debug/&text=PHP动态环境配置与调试"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/10/15/php_debug/&is_video=false&description=PHP动态环境配置与调试"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=PHP动态环境配置与调试&body=Check out this article: http://example.com/2020/10/15/php_debug/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/10/15/php_debug/&name=PHP动态环境配置与调试&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/10/15/php_debug/&t=PHP动态环境配置与调试"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://a1phaboy.github.io/2020/10/15/php_debug/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://a1phaboy.github.io/2020/10/15/php_debug/&text=PHP动态环境配置与调试"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://a1phaboy.github.io/2020/10/15/php_debug/&is_video=false&description=PHP动态环境配置与调试"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=PHP动态环境配置与调试&body=Check out this article: https://a1phaboy.github.io/2020/10/15/php_debug/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://a1phaboy.github.io/2020/10/15/php_debug/&title=PHP动态环境配置与调试"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://a1phaboy.github.io/2020/10/15/php_debug/&name=PHP动态环境配置与调试&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://a1phaboy.github.io/2020/10/15/php_debug/&t=PHP动态环境配置与调试"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
