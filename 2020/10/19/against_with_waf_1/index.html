@@ -6,17 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="title: 记一次绕墙测试author: a1phaboydate: 2020&#x2F;10&#x2F;19 22:43:55tags: [砍柴,php,waf,绕过]  在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。绕过web防火墙笔者认为主要是分为三个阶段：">
+    <meta name="description" content="在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。绕过web防火墙笔者认为主要是分为三个阶段：   第一阶段识别waf。我喜欢叫踩点，主要的作用和意义在于摸清楚网站用的是什么waf。各个防火墙的拦截页面请查看这篇文章这里我们遇到的是这个↓↓对比后可以发">
 <meta property="og:type" content="article">
-<meta property="og:title" content="a1phaboy">
+<meta property="og:title" content="记一次绕墙测试">
 <meta property="og:url" content="https://a1phaboy.github.io/2020/10/19/against_with_waf_1/index.html">
 <meta property="og:site_name" content="a1phaboy">
-<meta property="og:description" content="title: 记一次绕墙测试author: a1phaboydate: 2020&#x2F;10&#x2F;19 22:43:55tags: [砍柴,php,waf,绕过]  在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。绕过web防火墙笔者认为主要是分为三个阶段：">
+<meta property="og:description" content="在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。绕过web防火墙笔者认为主要是分为三个阶段：   第一阶段识别waf。我喜欢叫踩点，主要的作用和意义在于摸清楚网站用的是什么waf。各个防火墙的拦截页面请查看这篇文章这里我们遇到的是这个↓↓对比后可以发">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://a1phaboy.github.io/2020/10/19/against_with_waf_1/1.jpg">
-<meta property="article:published_time" content="2020-10-19T13:54:32.605Z">
-<meta property="article:modified_time" content="2020-10-23T14:39:30.524Z">
+<meta property="article:published_time" content="2020-10-19T14:43:55.000Z">
+<meta property="article:modified_time" content="2020-10-26T15:24:24.740Z">
 <meta property="article:author" content="a1phaboy">
+<meta property="article:tag" content="砍柴">
+<meta property="article:tag" content="php">
+<meta property="article:tag" content="waf">
+<meta property="article:tag" content="绕过">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://a1phaboy.github.io/2020/10/19/against_with_waf_1/1.jpg">
     
@@ -38,7 +42,7 @@
         
     
     <!-- title -->
-    <title>a1phaboy</title>
+    <title>记一次绕墙测试</title>
     <!-- styles -->
     
 <link rel="stylesheet" href="/css/style.css">
@@ -95,16 +99,16 @@
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&text="><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&is_video=false&description="><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=&body=Check out this article: https://a1phaboy.github.io/2020/10/19/against_with_waf_1/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&name=&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&t="><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&text=记一次绕墙测试"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&is_video=false&description=记一次绕墙测试"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记一次绕墙测试&body=Check out this article: https://a1phaboy.github.io/2020/10/19/against_with_waf_1/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&name=记一次绕墙测试&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&t=记一次绕墙测试"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -121,7 +125,7 @@
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
-        
+        记一次绕墙测试
     </h1>
 
 
@@ -133,7 +137,7 @@
       
     <div class="postdate">
       
-        <time datetime="2020-10-19T13:54:32.605Z" itemprop="datePublished">2020-10-19</time>
+        <time datetime="2020-10-19T14:43:55.000Z" itemprop="datePublished">2020-10-19</time>
         
       
     </div>
@@ -143,6 +147,11 @@
       
 
       
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/php/" rel="tag">php</a>, <a class="tag-link-link" href="/tags/waf/" rel="tag">waf</a>, <a class="tag-link-link" href="/tags/%E7%A0%8D%E6%9F%B4/" rel="tag">砍柴</a>, <a class="tag-link-link" href="/tags/%E7%BB%95%E8%BF%87/" rel="tag">绕过</a>
+    </div>
+
 
 
     </div>
@@ -150,10 +159,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <hr>
-<p>title: 记一次绕墙测试<br>author: a1phaboy<br>date: 2020/10/19 22:43:55<br>tags: [砍柴,php,waf,绕过]</p>
-<hr>
-<p>在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！<br>平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。<br>绕过web防火墙笔者认为主要是分为三个阶段：  </p>
+    <p>在日常的渗透工作中，过墙是必需学会的操作。那有请今天的主角：BT-waf付费版！<br>平时接触的BT-waf还挺多，但是付费版却碰到得少之又少（毕竟大家都懂嘛，老白嫖了），好不容易遇到一次，怎么可能放过。<br>绕过web防火墙笔者认为主要是分为三个阶段：  </p>
 <h2 id="第一阶段"><a href="#第一阶段" class="headerlink" title="第一阶段"></a>第一阶段</h2><p>识别waf。我喜欢叫踩点，主要的作用和意义在于摸清楚网站用的是什么waf。<br>各个防火墙的拦截页面请查看<a href="/2020/10/19/waf_errorpage_summary/index.html">这篇文章</a><br>这里我们遇到的是这个↓↓<br><img src="/2020/10/19/against_with_waf_1/1.jpg"><br>对比后可以发现，和BT 的防火墙最像，由此可以确定是BT的waf，但是版本还是未知。  </p>
 <h2 id="第二阶段"><a href="#第二阶段" class="headerlink" title="第二阶段"></a>第二阶段</h2><p>查阅文献。可以从网上翻阅查找此类waf的绕过方式与技巧，目前很多的博客和论坛都谈到如何绕过waf的技巧，这里笔者就不详细展开了。  </p>
 <h2 id="第三阶段"><a href="#第三阶段" class="headerlink" title="第三阶段"></a>第三阶段</h2><p>手工绕过。这是在自己翻阅了资料尝试无果（或者是绕墙大佬直接采用的方法），简单粗暴，就是去判断过滤了那些字符，是否做了正则匹配，制造出独特的payload来绕过。一般手工绕过的深度取决于自身的技术水平和经验（还是得以经验为主呀，有的墙绕着绕着就懂了）。  </p>
@@ -201,16 +207,16 @@ fwrite($myfile,$txt0.$txt1.$txt2.$txt3.$txt4);
     <div id="share-footer" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&text="><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&is_video=false&description="><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=&body=Check out this article: https://a1phaboy.github.io/2020/10/19/against_with_waf_1/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title="><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&name=&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&t="><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&text=记一次绕墙测试"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&is_video=false&description=记一次绕墙测试"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记一次绕墙测试&body=Check out this article: https://a1phaboy.github.io/2020/10/19/against_with_waf_1/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&title=记一次绕墙测试"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&name=记一次绕墙测试&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://a1phaboy.github.io/2020/10/19/against_with_waf_1/&t=记一次绕墙测试"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
