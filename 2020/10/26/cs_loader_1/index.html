@@ -14,7 +14,7 @@
 <meta property="og:description" content="在github上看到一个项目，感觉还不错就拿来讲讲了，友链：https:&#x2F;&#x2F;github.com&#x2F;Gality369&#x2F;CS-Loader&#x2F;在实战当中，我们应对环境的不确定性需要对木马进行免杀，自己写马子难度高，耗时长，另外还要做相应免杀，使得开发周期会被拉长，无意间看到一个开源项目（cs-loader），感觉还比较容易入手，且方便魔改。另外也有一个hub主的项目也不错，这里也顺便推一下：https">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-26T14:51:36.000Z">
-<meta property="article:modified_time" content="2020-10-27T13:38:13.823Z">
+<meta property="article:modified_time" content="2020-10-27T13:46:01.079Z">
 <meta property="article:author" content="a1phaboy">
 <meta property="article:tag" content="RedTeam">
 <meta property="article:tag" content="免杀">
@@ -180,7 +180,7 @@ int main()
 <p>GetCode()函数的作用主要是向C2服务器请求加密的shellcode，返回shellcode的指针。<br>RtlMoveMemory() 代码复制函数。<br>可以看到代码中进行了一次RC4加密，而RC4是对称加密，在generator.cpp中，我们可以生成一个加密的shellcode，以便evil.cpp使用。</p>
 <p>整套代码的流程十分的清晰：生成加密shellcode -&gt; 保存至服务器 -&gt; 将shellcode和ip作为参数进行编译。  </p>
 <p>留一个小坑，日后用来魔改和解决未知问题 :)</p>
-<p>坑1：主函数中VirtualAlloc、RtlMoveMemory函数参数错误。1024 应该为–&gt; Base64ShellLen 。</p>
+<p>坑1：主函数中VirtualAlloc、RtlMoveMemory函数参数错误。1024 应该为–&gt; Base64ShellLen 。<br>坑2：在自己内网搭建的cs服务器上进行测试没有问题，如果连公网cs服务器有时候程序会clash.(正常程序占用内存2000k左右，不正常只占用40k、500k，初步判断是开空间没开好)。</p>
 
   </div>
 </article>
