@@ -2,7 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://a1phaboy.github.io/2020/10/20/vpn_talk/</loc>
+    <loc>https://a1phaboy.github.io/2020/10/26/cs_loader_1/</loc>
+    
+    <lastmod>2020-10-29</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://a1phaboy.github.io/2020/10/21/cpp_builder_1/</loc>
     
     <lastmod>2020-10-29</lastmod>
     
@@ -16,9 +23,9 @@
   </url>
   
   <url>
-    <loc>https://a1phaboy.github.io/2020/10/26/cs_loader_1/</loc>
+    <loc>https://a1phaboy.github.io/2020/10/20/vpn_talk/</loc>
     
-    <lastmod>2020-10-28</lastmod>
+    <lastmod>2020-10-29</lastmod>
     
   </url>
   
@@ -66,13 +73,6 @@
   
   <url>
     <loc>https://a1phaboy.github.io/2020/10/16/experience_1/</loc>
-    
-    <lastmod>2020-10-23</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://a1phaboy.github.io/2020/10/21/cpp_builder_1/</loc>
     
     <lastmod>2020-10-23</lastmod>
     
@@ -165,13 +165,6 @@
   </url>
   
   <url>
-    <loc>https://a1phaboy.github.io/tags/C-C/</loc>
-    <lastmod>2020-10-29</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://a1phaboy.github.io/tags/RedTeam/</loc>
     <lastmod>2020-10-29</lastmod>
     <changefreq>daily</changefreq>
@@ -201,13 +194,6 @@
   
   <url>
     <loc>https://a1phaboy.github.io/tags/%E5%85%8D%E6%9D%80/</loc>
-    <lastmod>2020-10-29</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://a1phaboy.github.io/tags/c-c/</loc>
     <lastmod>2020-10-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -263,7 +249,28 @@
   </url>
   
   <url>
-    <loc>https://a1phaboy.github.io/tags/%E5%90%8E%E6%B8%97%E9%80%8F%EF%BC%8CRedTeam/</loc>
+    <loc>https://a1phaboy.github.io/tags/cpp/</loc>
+    <lastmod>2020-10-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://a1phaboy.github.io/tags/%E5%90%8E%E6%B8%97%E9%80%8F/</loc>
+    <lastmod>2020-10-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://a1phaboy.github.io/tags/Cobalt-Strike/</loc>
+    <lastmod>2020-10-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://a1phaboy.github.io/tags/Metasploit/</loc>
     <lastmod>2020-10-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
